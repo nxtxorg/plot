@@ -22,7 +22,7 @@ export default {
     input: `src/${pkg.name}.ts`,
     output: {
         name: pkg.name.replace(/-/g, '_'),
-        file: `build/${pkg.name}.js`,
+        file: `build/${pkg.name}${(!dev ? '.min' : '')}.js`,
         format: 'iife',
         sourcemap: true
     },
