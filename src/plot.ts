@@ -25,7 +25,8 @@ const pkg: Package = {
                 ctx.lineTo(i+1,y[i+1]*canvasHeight);
                 ctx.stroke();
             }
-            return canvas;
+
+            return {type:NodeType.Html,value:canvas};
         }
     },
 };

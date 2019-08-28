@@ -1,6 +1,20 @@
 var plot = (function () {
     'use strict';
 
+    var NodeType;
+    (function (NodeType) {
+        NodeType[NodeType["Paragraph"] = 1] = "Paragraph";
+        NodeType[NodeType["Command"] = 2] = "Command";
+        NodeType[NodeType["Text"] = 3] = "Text";
+        NodeType[NodeType["Block"] = 4] = "Block";
+        NodeType[NodeType["Html"] = 5] = "Html";
+        NodeType[NodeType["Node"] = 6] = "Node";
+        NodeType[NodeType["Dictionary"] = 11] = "Dictionary";
+        NodeType[NodeType["Array"] = 12] = "Array";
+        NodeType[NodeType["Number"] = 13] = "Number";
+        NodeType[NodeType["String"] = 14] = "String";
+    })(NodeType || (NodeType = {}));
+
     var pkg = {
         name: 'plot',
         commands: {
@@ -19,7 +33,7 @@ var plot = (function () {
                     ctx.lineTo(i + 1, y[i + 1] * canvasHeight);
                     ctx.stroke();
                 }
-                return canvas;
+                return { type: NodeType.Html, value: canvas };
             }
         },
     };
