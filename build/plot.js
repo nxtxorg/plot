@@ -33,7 +33,7 @@ var plot = (function () {
                     ctx.lineTo(i + 1, y[i + 1] * canvasHeight);
                     ctx.stroke();
                 }
-                return { type: NodeType.Html, value: canvas };
+                return { type: NodeType.Node, value: canvas };
             }
         },
     };

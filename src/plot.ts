@@ -26,7 +26,7 @@ const pkg: Package = {
                 ctx.stroke();
             }
 
-            return {type:NodeType.Html,value:canvas};
+            return {type:NodeType.Node,value:canvas};
         }
     },
 };
