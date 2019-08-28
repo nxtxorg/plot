@@ -20,7 +20,7 @@ var plot = (function () {
         commands: {
             plot: function (dictionaryNode) {
                 var _a = dictionaryNode.value, type = _a.type, y = _a.y, ylabel = _a.ylabel, xlabel = _a.xlabel;
-                var canvas = document.createElement("canvas");
+                var canvas = nxtx.htmlLite("canvas", {});
                 var ctx = canvas.getContext("2d");
                 var canvasHeight = canvas.height = 100;
                 canvas.width = 100;

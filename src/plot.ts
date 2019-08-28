@@ -7,7 +7,7 @@ const pkg: Package = {
     commands: {
         plot: (dictionaryNode: Node) => {
             let {type, y, ylabel, xlabel} = dictionaryNode.value;
-            const canvas = document.createElement("canvas");
+            const canvas = <HTMLCanvasElement> nxtx.htmlLite("canvas", {});
 
             const ctx = canvas.getContext("2d");
 
