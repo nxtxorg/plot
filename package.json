@@ -1,8 +1,8 @@
 {
-  "name": "nxtx-package-name",
+  "name": "plot",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Jenno",
   "license": "MIT",
   "devDependencies": {
     "rollup": "^1.15.6",
