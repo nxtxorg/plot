@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "sourceMap": true,
+    "removeComments": true,
+    "noLib": false,
+    "lib": [
+      "dom",
+      "es6",
+      "esnext.array"
+    ]
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
