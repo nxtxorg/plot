@@ -25,8 +25,7 @@ const pkg: Package = {
                 ctx.lineTo(i+1,y[i+1]*canvasHeight);
                 ctx.stroke();
             }
-
-
+            return canvas;
         }
     },
 };
@@ -37,3 +36,6 @@ function normalize(array) {
     const max = Math.max(...array) - min;
     return array.map(e => (e - min) / max);
 }
+if(nxtx !== undefined)
+    nxtx.registerPackage(pkg);
+export default pkg;
