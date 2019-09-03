@@ -13,25 +13,35 @@ var plot = (function () {
                 var ctx = canvas.getContext("2d");
                 var canvasHeight = canvas.height = 200;
                 var canvasWidth = canvas.width = 400;
+                var offset = 30;
+                var graphHeight = canvasHeight - offset;
+                var graphWidth = canvasWidth - offset;
                 canvas.style.margin = "auto";
                 canvas.style.display = "block";
                 var normalizedY = normalize(yValue);
-                var spacing = canvasWidth / (normalizedY.length - 1);
+                var spacing = graphWidth / (normalizedY.length - 1);
                 console.log("spacing ", spacing);
                 ctx.beginPath();
+                ctx.imageSmoothingEnabled = true;
+                ctx.translate(0.5, 0.5);
                 for (var i = 0; i < normalizedY.length - 1; i++) {
-                    line(ctx, i * spacing, canvasHeight - (normalizedY[i] * canvasHeight), (i + 1) * spacing, canvasHeight - (normalizedY[i + 1] * canvasHeight));
+                    line(ctx, i * spacing + offset, graphHeight - (normalizedY[i] * graphHeight), (i + 1) * spacing + offset, graphHeight - (normalizedY[i + 1] * graphHeight), 2);
                 }
-                line(ctx, 30, 0, 30, canvasHeight - 30);
+                ctx.stroke();
+                ctx.lineCap = "round";
+                line(ctx, offset, 0, offset, canvasHeight - offset + 10);
+                line(ctx, offset - 10, canvasHeight - offset, canvasWidth, canvasHeight - offset);
+                ctx.stroke();
                 console.log("Done drawing");
                 return canvas;
             }
         },
     };
-    function line(context, x1, y1, x2, y2) {
+    function line(context, x1, y1, x2, y2, lineWidth) {
+        if (lineWidth === void 0) { lineWidth = 1; }
+        context.lineWidth = lineWidth;
         context.moveTo(x1, y1);
         context.lineTo(x2, y2);
-        context.stroke();
     }
     function normalize(array) {
         var min = Math.min.apply(Math, array);
