@@ -8,11 +8,11 @@ var plot = (function () {
                 console.log("Drawing..");
                 var _a = dictionaryNode.value, type = _a.type, y = _a.y, ylabel = _a.ylabel, xlabel = _a.xlabel;
                 var canvas = nxtx.htmlLite("canvas", {});
-                var yValue = dictionaryNode.value.y.value.map(function (e) { return e.value; });
                 var ctx = canvas.getContext("2d");
+                var yValue = dictionaryNode.value.y.value.map(function (e) { return e.value; });
+                var offset = 30;
                 var canvasHeight = canvas.height = 200;
                 var canvasWidth = canvas.width = 400;
-                var offset = 30;
                 var graphHeight = canvasHeight - offset;
                 var graphWidth = canvasWidth - offset;
                 canvas.style.margin = "auto";
@@ -36,8 +36,8 @@ var plot = (function () {
                 }
                 ctx.stroke();
                 ctx.lineCap = "round";
-                line(ctx, offset, 0, offset, canvasHeight - offset + 10);
-                line(ctx, offset - 10, canvasHeight - offset, canvasWidth, canvasHeight - offset);
+                line(ctx, offset, 0, offset, canvasHeight - offset + 0);
+                line(ctx, offset - 0, canvasHeight - offset, canvasWidth, canvasHeight - offset);
                 ctx.stroke();
                 console.log("Done drawing");
                 return canvas;
