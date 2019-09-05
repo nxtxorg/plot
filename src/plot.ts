@@ -15,15 +15,15 @@ const pkg: Package = {
 
             const offset = 30;
             const graphMarginTop = 10;
-            const graphMarginBottom = 30;
-            const graphMarginRight = 30;
+            const graphMarginBottom = 10;
+            const graphMarginRight = 10;
             const graphMarginLeft = 30;
 
-            const canvasHeight = canvas.height = 250;
-            const canvasWidth = canvas.width = 500;
+            const canvasHeight = canvas.height = 150;
+            const canvasWidth = canvas.width = 300;
 
             const graphHeight = canvasHeight - graphMarginTop - graphMarginBottom;
-            const graphWidth = canvasWidth - offset;
+            const graphWidth = canvasWidth - graphMarginLeft - graphMarginRight;
 
             canvas.style.margin = "auto";
             canvas.style.display = "block";
@@ -40,8 +40,8 @@ const pkg: Package = {
 
             ctx.beginPath();
             for (let i = 0; i < yLabels.length; i++) {
-                line(ctx, offset, (verticalSpacing * i)+graphMarginTop, offset + 5, (verticalSpacing * i)+graphMarginTop, 1);
-                ctx.fillText(String(Math.round(yLabels[i])), 0, i * verticalSpacing + graphMarginTop + 4);
+                line(ctx, offset, (verticalSpacing * i) + graphMarginTop, offset + 5, (verticalSpacing * i) + graphMarginTop, 1);
+                ctx.fillText(String(Math.round(yLabels[i])), graphMarginLeft - (Math.max(...yValue).toString().length * 8), i * verticalSpacing + graphMarginTop + 4);
             }
             ctx.stroke();
             ctx.closePath();
@@ -50,8 +50,8 @@ const pkg: Package = {
             ///////////// Graph
             ctx.beginPath();
             for (let i = 0; i < normalizedY.length - 1; i++) {
-                line(ctx, i * spacing + offset, graphHeight - (normalizedY[i] * graphHeight),
-                    (i + 1) * spacing + offset, graphHeight - (normalizedY[i + 1] * graphHeight), 1);
+                line(ctx, i * spacing + graphMarginLeft, graphHeight - (normalizedY[i] * graphHeight) + graphMarginTop,
+                    (i + 1) * spacing + graphMarginLeft, graphHeight - (normalizedY[i + 1] * graphHeight) + graphMarginTop, 1);
             }
 
             ctx.stroke();
@@ -59,8 +59,11 @@ const pkg: Package = {
 
 
             //////// Borders
-            line(ctx, offset, graphMarginTop, offset, canvasHeight - graphMarginBottom);
-            line(ctx, graphMarginLeft, canvasHeight - offset, canvasWidth - graphMarginRight, canvasHeight - offset);
+            line(ctx, graphMarginLeft, graphMarginTop, graphMarginLeft, canvasHeight - graphMarginBottom); //left
+            line(ctx, canvasWidth - graphMarginRight, graphMarginTop, canvasWidth - graphMarginRight, canvasHeight - graphMarginBottom); //left
+
+            line(ctx, graphMarginLeft, graphMarginTop, canvasWidth - graphMarginRight, graphMarginTop); //top
+            line(ctx, graphMarginLeft, canvasHeight - graphMarginBottom, canvasWidth - graphMarginRight, canvasHeight - graphMarginBottom); //bottom
 
 
             ctx.stroke();

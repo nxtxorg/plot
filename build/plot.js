@@ -12,13 +12,13 @@ var plot = (function () {
                 var yValue = dictionaryNode.value.y.value.map(function (e) { return e.value; });
                 var offset = 30;
                 var graphMarginTop = 10;
-                var graphMarginBottom = 30;
-                var graphMarginRight = 30;
+                var graphMarginBottom = 10;
+                var graphMarginRight = 10;
                 var graphMarginLeft = 30;
-                var canvasHeight = canvas.height = 250;
-                var canvasWidth = canvas.width = 500;
+                var canvasHeight = canvas.height = 150;
+                var canvasWidth = canvas.width = 300;
                 var graphHeight = canvasHeight - graphMarginTop - graphMarginBottom;
-                var graphWidth = canvasWidth - offset;
+                var graphWidth = canvasWidth - graphMarginLeft - graphMarginRight;
                 canvas.style.margin = "auto";
                 canvas.style.display = "block";
                 var normalizedY = normalize(yValue);
@@ -30,18 +30,20 @@ var plot = (function () {
                 ctx.beginPath();
                 for (var i = 0; i < yLabels.length; i++) {
                     line(ctx, offset, (verticalSpacing * i) + graphMarginTop, offset + 5, (verticalSpacing * i) + graphMarginTop, 1);
-                    ctx.fillText(String(Math.round(yLabels[i])), 0, i * verticalSpacing + graphMarginTop + 4);
+                    ctx.fillText(String(Math.round(yLabels[i])), graphMarginLeft - (Math.max.apply(Math, yValue).toString().length * 8), i * verticalSpacing + graphMarginTop + 4);
                 }
                 ctx.stroke();
                 ctx.closePath();
                 ctx.beginPath();
                 for (var i = 0; i < normalizedY.length - 1; i++) {
-                    line(ctx, i * spacing + offset, graphHeight - (normalizedY[i] * graphHeight), (i + 1) * spacing + offset, graphHeight - (normalizedY[i + 1] * graphHeight), 1);
+                    line(ctx, i * spacing + graphMarginLeft, graphHeight - (normalizedY[i] * graphHeight) + graphMarginTop, (i + 1) * spacing + graphMarginLeft, graphHeight - (normalizedY[i + 1] * graphHeight) + graphMarginTop, 1);
                 }
                 ctx.stroke();
                 ctx.lineCap = "round";
-                line(ctx, offset, graphMarginTop, offset, canvasHeight - graphMarginBottom);
-                line(ctx, graphMarginLeft, canvasHeight - offset, canvasWidth - graphMarginRight, canvasHeight - offset);
+                line(ctx, graphMarginLeft, graphMarginTop, graphMarginLeft, canvasHeight - graphMarginBottom);
+                line(ctx, canvasWidth - graphMarginRight, graphMarginTop, canvasWidth - graphMarginRight, canvasHeight - graphMarginBottom);
+                line(ctx, graphMarginLeft, graphMarginTop, canvasWidth - graphMarginRight, graphMarginTop);
+                line(ctx, graphMarginLeft, canvasHeight - graphMarginBottom, canvasWidth - graphMarginRight, canvasHeight - graphMarginBottom);
                 ctx.stroke();
                 console.log("Done drawing");
                 return canvas;
