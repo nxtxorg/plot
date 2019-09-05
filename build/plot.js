@@ -15,8 +15,8 @@ var plot = (function () {
                 var graphMarginBottom = 10;
                 var graphMarginRight = 10;
                 var graphMarginLeft = 30;
-                var canvasHeight = canvas.height = 150;
-                var canvasWidth = canvas.width = 300;
+                var canvasHeight = canvas.height = 200;
+                var canvasWidth = canvas.width = 400;
                 var graphHeight = canvasHeight - graphMarginTop - graphMarginBottom;
                 var graphWidth = canvasWidth - graphMarginLeft - graphMarginRight;
                 canvas.style.margin = "auto";

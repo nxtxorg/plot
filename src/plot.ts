@@ -19,8 +19,8 @@ const pkg: Package = {
             const graphMarginRight = 10;
             const graphMarginLeft = 30;
 
-            const canvasHeight = canvas.height = 150;
-            const canvasWidth = canvas.width = 300;
+            const canvasHeight = canvas.height = 200;
+            const canvasWidth = canvas.width = 400;
 
             const graphHeight = canvasHeight - graphMarginTop - graphMarginBottom;
             const graphWidth = canvasWidth - graphMarginLeft - graphMarginRight;
@@ -34,7 +34,7 @@ const pkg: Package = {
             ctx.translate(0.5, 0.5);
 
 
-            ///////////// Vertical labels
+            ///////////// Y labels
             const yLabels = generateYLabels(yValue, 10);
             const verticalSpacing = graphHeight / (yLabels.length - 1);
 
@@ -46,6 +46,8 @@ const pkg: Package = {
             ctx.stroke();
             ctx.closePath();
 
+            ///////////// X Labels
+            const XLabelAmount = Math.round(graphWidth / 30);
 
             ///////////// Graph
             ctx.beginPath();
