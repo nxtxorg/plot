@@ -14,11 +14,15 @@ const pkg: Package = {
             const yValue = dictionaryNode.value.y.value.map(e => e.value);
 
             const offset = 30;
+            const graphMarginTop = 10;
+            const graphMarginBottom = 30;
+            const graphMarginRight = 30;
+            const graphMarginLeft = 30;
 
-            const canvasHeight = canvas.height = 200;
-            const canvasWidth = canvas.width = 400;
+            const canvasHeight = canvas.height = 250;
+            const canvasWidth = canvas.width = 500;
 
-            const graphHeight = canvasHeight - offset;
+            const graphHeight = canvasHeight - graphMarginTop - graphMarginBottom;
             const graphWidth = canvasWidth - offset;
 
             canvas.style.margin = "auto";
@@ -36,8 +40,8 @@ const pkg: Package = {
 
             ctx.beginPath();
             for (let i = 0; i < yLabels.length; i++) {
-                line(ctx, offset, verticalSpacing * i, offset + 5, verticalSpacing * i, 1);
-                ctx.fillText(String(Math.round(yLabels[i])), 0, i * verticalSpacing + 4);
+                line(ctx, offset, (verticalSpacing * i)+graphMarginTop, offset + 5, (verticalSpacing * i)+graphMarginTop, 1);
+                ctx.fillText(String(Math.round(yLabels[i])), 0, i * verticalSpacing + graphMarginTop + 4);
             }
             ctx.stroke();
             ctx.closePath();
@@ -55,8 +59,8 @@ const pkg: Package = {
 
 
             //////// Borders
-            line(ctx, offset, 0, offset, canvasHeight - offset + 0);
-            line(ctx, offset - 0, canvasHeight - offset, canvasWidth, canvasHeight - offset);
+            line(ctx, offset, graphMarginTop, offset, canvasHeight - graphMarginBottom);
+            line(ctx, graphMarginLeft, canvasHeight - offset, canvasWidth - graphMarginRight, canvasHeight - offset);
 
 
             ctx.stroke();

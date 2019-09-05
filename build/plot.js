@@ -11,9 +11,13 @@ var plot = (function () {
                 var ctx = canvas.getContext("2d");
                 var yValue = dictionaryNode.value.y.value.map(function (e) { return e.value; });
                 var offset = 30;
-                var canvasHeight = canvas.height = 200;
-                var canvasWidth = canvas.width = 400;
-                var graphHeight = canvasHeight - offset;
+                var graphMarginTop = 10;
+                var graphMarginBottom = 30;
+                var graphMarginRight = 30;
+                var graphMarginLeft = 30;
+                var canvasHeight = canvas.height = 250;
+                var canvasWidth = canvas.width = 500;
+                var graphHeight = canvasHeight - graphMarginTop - graphMarginBottom;
                 var graphWidth = canvasWidth - offset;
                 canvas.style.margin = "auto";
                 canvas.style.display = "block";
@@ -25,8 +29,8 @@ var plot = (function () {
                 var verticalSpacing = graphHeight / (yLabels.length - 1);
                 ctx.beginPath();
                 for (var i = 0; i < yLabels.length; i++) {
-                    line(ctx, offset, verticalSpacing * i, offset + 5, verticalSpacing * i, 1);
-                    ctx.fillText(String(Math.round(yLabels[i])), 0, i * verticalSpacing + 4);
+                    line(ctx, offset, (verticalSpacing * i) + graphMarginTop, offset + 5, (verticalSpacing * i) + graphMarginTop, 1);
+                    ctx.fillText(String(Math.round(yLabels[i])), 0, i * verticalSpacing + graphMarginTop + 4);
                 }
                 ctx.stroke();
                 ctx.closePath();
@@ -36,8 +40,8 @@ var plot = (function () {
                 }
                 ctx.stroke();
                 ctx.lineCap = "round";
-                line(ctx, offset, 0, offset, canvasHeight - offset + 0);
-                line(ctx, offset - 0, canvasHeight - offset, canvasWidth, canvasHeight - offset);
+                line(ctx, offset, graphMarginTop, offset, canvasHeight - graphMarginBottom);
+                line(ctx, graphMarginLeft, canvasHeight - offset, canvasWidth - graphMarginRight, canvasHeight - offset);
                 ctx.stroke();
                 console.log("Done drawing");
                 return canvas;
