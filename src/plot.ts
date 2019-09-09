@@ -39,10 +39,12 @@ const pkg: Package = {
             const verticalSpacing = graphHeight / (yLabels.length - 1);
 
             ctx.beginPath();
+            const labelLengths = yLabels.map(x => getStringLength(x));
+            console.log(yLabels.map(x => getStringLength(x)));
             for (let i = 0; i < yLabels.length; i++) {
                 line(ctx, offset, (verticalSpacing * i) + graphMarginTop, offset + 5, (verticalSpacing * i) + graphMarginTop, 1);
-                ctx.fillText(String(Math.round(yLabels[yLabels.length - (i + 1)] * 10) / 10),
-                    graphMarginLeft - ((Math.max(...yValue).toString().length + 1) * 8),
+                ctx.fillText(String(yLabels[yLabels.length - (i + 1)]),
+                    graphMarginLeft - Math.max(...labelLengths),
                     i * verticalSpacing + graphMarginTop + 4)
             }
             ctx.stroke();
@@ -86,9 +88,27 @@ function generateYLabels(values, amount) {
     const delta = (max - min) / (amount - 1);
     const output = [];
     for (let i = 0; i <= (amount - 1); i++)
-        output.push(min + (delta * i));
+        output.push(Math.round((min + (delta * i)*10))/10);
 
     return output;
+}
+
+function getStringLength(input) {
+    console.log(input);
+    const inputString = input.toString();
+    console.log(inputString);
+     let number = inputString.length * 8;
+     console.log(number);
+     if(input < 0) {
+         number -= 4;
+     }
+     if (inputString.includes('.')) {
+        console.log("dot");
+        number -= 4;
+    }
+     console.log(number);
+     console.log("outputnumber",number);
+    return number
 }
 
 function line(context, x1, y1, x2, y2, lineWidth = 1) {

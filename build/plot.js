@@ -28,9 +28,11 @@ var plot = (function () {
                 var yLabels = generateYLabels(yValue, 10);
                 var verticalSpacing = graphHeight / (yLabels.length - 1);
                 ctx.beginPath();
+                var labelLengths = yLabels.map(function (x) { return getStringLength(x); });
+                console.log(yLabels.map(function (x) { return getStringLength(x); }));
                 for (var i = 0; i < yLabels.length; i++) {
                     line(ctx, offset, (verticalSpacing * i) + graphMarginTop, offset + 5, (verticalSpacing * i) + graphMarginTop, 1);
-                    ctx.fillText(String(Math.round(yLabels[yLabels.length - (i + 1)] * 10) / 10), graphMarginLeft - ((Math.max.apply(Math, yValue).toString().length + 1) * 8), i * verticalSpacing + graphMarginTop + 4);
+                    ctx.fillText(String(yLabels[yLabels.length - (i + 1)]), graphMarginLeft - Math.max.apply(Math, labelLengths), i * verticalSpacing + graphMarginTop + 4);
                 }
                 ctx.stroke();
                 ctx.closePath();
@@ -56,8 +58,25 @@ var plot = (function () {
         var delta = (max - min) / (amount - 1);
         var output = [];
         for (var i = 0; i <= (amount - 1); i++)
-            output.push(min + (delta * i));
+            output.push(Math.round((min + (delta * i) * 10)) / 10);
         return output;
+    }
+    function getStringLength(input) {
+        console.log(input);
+        var inputString = input.toString();
+        console.log(inputString);
+        var number = inputString.length * 8;
+        console.log(number);
+        if (input < 0) {
+            number -= 4;
+        }
+        if (inputString.includes('.')) {
+            console.log("dot");
+            number -= 4;
+        }
+        console.log(number);
+        console.log("outputnumber", number);
+        return number;
     }
     function line(context, x1, y1, x2, y2, lineWidth) {
         if (lineWidth === void 0) { lineWidth = 1; }
