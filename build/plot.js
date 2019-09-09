@@ -1,38 +1,71 @@
 var plot = (function () {
     'use strict';
 
+    var defaultOptions = {
+        y: {
+            prefix: '',
+            decimals: 0,
+            values: []
+        }
+    };
     var pkg = {
         name: 'plot',
         commands: {
-            plot: function (dictionaryNode) {
+            plot: function (optionsNode) {
                 console.log("Drawing..");
-                var _a = dictionaryNode.value, type = _a.type, y = _a.y, ylabel = _a.ylabel, xlabel = _a.xlabel;
+                var options = Object.assign({}, defaultOptions, nxtx.jsArgument(optionsNode));
                 var canvas = nxtx.htmlLite("canvas", {});
                 var ctx = canvas.getContext("2d");
-                var yValue = dictionaryNode.value.y.value.map(function (e) { return e.value; });
-                var offset = 30;
+                console.log("getting values..");
+                console.table(options);
+                console.log("values: ", options.y.values);
+                var normalizedY = normalize(options.y.values);
+                var yLabels = generateYLabels(options.y.values, 10);
+                var labelLengths = yLabels.map(function (x) { return getStringLength(x); });
+                var yLabelLength = Math.max.apply(Math, labelLengths);
                 var graphMarginTop = 10;
-                var graphMarginBottom = 10;
+                var graphMarginBottom = 20;
                 var graphMarginRight = 10;
                 var graphMarginLeft = 30;
-                var canvasHeight = canvas.height = 200;
+                if (graphMarginLeft < yLabelLength) {
+                    graphMarginLeft = yLabelLength;
+                }
+                var canvasHeight = canvas.height = 220;
                 var canvasWidth = canvas.width = 400;
                 var graphHeight = canvasHeight - graphMarginTop - graphMarginBottom;
                 var graphWidth = canvasWidth - graphMarginLeft - graphMarginRight;
                 canvas.style.margin = "auto";
                 canvas.style.display = "block";
-                var normalizedY = normalize(yValue);
                 var spacing = graphWidth / (normalizedY.length - 1);
                 ctx.imageSmoothingEnabled = true;
                 ctx.translate(0.5, 0.5);
-                var yLabels = generateYLabels(yValue, 10);
+                ctx.textAlign = "right";
                 var verticalSpacing = graphHeight / (yLabels.length - 1);
                 ctx.beginPath();
-                var labelLengths = yLabels.map(function (x) { return getStringLength(x); });
-                console.log(yLabels.map(function (x) { return getStringLength(x); }));
                 for (var i = 0; i < yLabels.length; i++) {
-                    line(ctx, offset, (verticalSpacing * i) + graphMarginTop, offset + 5, (verticalSpacing * i) + graphMarginTop, 1);
-                    ctx.fillText(String(yLabels[yLabels.length - (i + 1)]), graphMarginLeft - Math.max.apply(Math, labelLengths), i * verticalSpacing + graphMarginTop + 4);
+                    line(ctx, graphMarginLeft, (verticalSpacing * i) + graphMarginTop, graphMarginLeft + 5, (verticalSpacing * i) + graphMarginTop, 1);
+                    ctx.fillText(String(yLabels[yLabels.length - (i + 1)]), graphMarginLeft - 4, i * verticalSpacing + graphMarginTop + 4);
+                }
+                ctx.stroke();
+                ctx.closePath();
+                var xMaxAmount = Math.round(graphWidth / 30);
+                var xAmount = options.y.values.length;
+                var xSpacing = graphWidth / xAmount;
+                console.log(xSpacing);
+                ctx.beginPath();
+                if (xAmount < xMaxAmount) {
+                    for (var i = 0; i < xAmount + 1; i++) {
+                        console.log(i.toString(), graphMarginLeft, graphHeight - graphMarginBottom);
+                        ctx.fillText((i + 1).toString(), (i * xSpacing) + graphMarginLeft + 4, canvasHeight - graphMarginBottom + 11);
+                        line(ctx, (i * xSpacing) + graphMarginLeft, canvasHeight - graphMarginBottom, (i * xSpacing) + graphMarginLeft, canvasHeight - graphMarginBottom - 4, 1);
+                    }
+                }
+                else {
+                    for (var i = 0; i < xMaxAmount + 1; i++) {
+                        console.log(i.toString(), graphMarginLeft, graphHeight - graphMarginBottom);
+                        ctx.fillText((i + 1).toString(), (i * (graphWidth / xMaxAmount)) + graphMarginLeft + 4, canvasHeight - graphMarginBottom + 11);
+                        line(ctx, (i * (graphWidth / xMaxAmount)) + graphMarginLeft, canvasHeight - graphMarginBottom, (i * (graphWidth / xMaxAmount)) + graphMarginLeft, canvasHeight - graphMarginBottom - 4, 1);
+                    }
                 }
                 ctx.stroke();
                 ctx.closePath();
@@ -53,21 +86,19 @@ var plot = (function () {
         },
     };
     function generateYLabels(values, amount) {
-        console.log(values);
         var min = Math.min.apply(Math, values);
         var max = Math.max.apply(Math, values);
         var delta = (max - min) / (amount - 1);
         var output = [];
         for (var i = 0; i <= (amount - 1); i++)
             output.push(Math.round(((min + (delta * i)) * 10)) / 10);
-        console.log(output);
         return output;
     }
     function getStringLength(input) {
         var inputString = input.toString();
-        var number = inputString.length * 8;
+        var number = inputString.length * 6 + 4;
         if (input < 0) {
-            number -= 4;
+            number -= 2;
         }
         if (inputString.includes('.')) {
             number -= 4;

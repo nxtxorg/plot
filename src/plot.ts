@@ -1,25 +1,38 @@
 import {NodeType, INxtx, Package, Node} from '../nxtx';
 
 declare const nxtx: INxtx;
+const defaultOptions = {
+    y: {
+        prefix: '',
+        decimals: 0,
+        values: []
+    }
+};
 
 const pkg: Package = {
     name: 'plot',
     commands: {
-        plot: (dictionaryNode: Node) => {
-            console.log("Drawing..");
-            let {type, y, ylabel, xlabel} = dictionaryNode.value;
+        plot: (optionsNode: Node) => {
+            const options = Object.assign({}, defaultOptions, nxtx.jsArgument(optionsNode));
+            //let {type, y, ylabel, xlabel} = dictionaryNode.value;
             const canvas = <HTMLCanvasElement>nxtx.htmlLite("canvas", {});
             const ctx = canvas.getContext("2d");
 
-            const yValue = dictionaryNode.value.y.value.map(e => e.value);
 
-            const offset = 30;
+            const normalizedY = normalize(options.y.values);
+            const yLabels = generateYLabels(options.y.values, 10);
+            const labelLengths = yLabels.map(x => getStringLength(x));
+            const yLabelLength = Math.max(...labelLengths);
             const graphMarginTop = 10;
-            const graphMarginBottom = 10;
+            const graphMarginBottom = 20;
             const graphMarginRight = 10;
-            const graphMarginLeft = 30;
 
-            const canvasHeight = canvas.height = 200;
+            let graphMarginLeft = 30;
+            if(graphMarginLeft < yLabelLength){
+                graphMarginLeft = yLabelLength;
+            }
+
+            const canvasHeight = canvas.height = 220;
             const canvasWidth = canvas.width = 400;
 
             const graphHeight = canvasHeight - graphMarginTop - graphMarginBottom;
@@ -27,7 +40,6 @@ const pkg: Package = {
 
             canvas.style.margin = "auto";
             canvas.style.display = "block";
-            const normalizedY = normalize(yValue);
             const spacing = graphWidth / (normalizedY.length - 1);
 
             ctx.imageSmoothingEnabled = true;
@@ -35,23 +47,42 @@ const pkg: Package = {
 
 
             ///////////// Y labels
-            const yLabels = generateYLabels(yValue, 10);
+            ctx.textAlign = "right";
             const verticalSpacing = graphHeight / (yLabels.length - 1);
 
             ctx.beginPath();
-            const labelLengths = yLabels.map(x => getStringLength(x));
-            console.log(yLabels.map(x => getStringLength(x)));
             for (let i = 0; i < yLabels.length; i++) {
-                line(ctx, offset, (verticalSpacing * i) + graphMarginTop, offset + 5, (verticalSpacing * i) + graphMarginTop, 1);
+                line(ctx, graphMarginLeft, (verticalSpacing * i) + graphMarginTop, graphMarginLeft + 5, (verticalSpacing * i) + graphMarginTop, 1);
                 ctx.fillText(String(yLabels[yLabels.length - (i + 1)]),
-                    graphMarginLeft - Math.max(...labelLengths),
+                    graphMarginLeft - 4,
                     i * verticalSpacing + graphMarginTop + 4)
             }
             ctx.stroke();
             ctx.closePath();
 
             ///////////// X Labels
-            const XLabelAmount = Math.round(graphWidth / 30);
+            const xMaxAmount = Math.round(graphWidth / 30);
+            const xAmount = options.y.values.length;
+
+            const xSpacing = graphWidth / xAmount;
+            ctx.beginPath();
+            if(xAmount < xMaxAmount){
+                for(let i = 0; i < xAmount+1 ; i++){
+                    ctx.fillText((i+1).toString(),(i * xSpacing) + graphMarginLeft+4,canvasHeight-graphMarginBottom+11);
+                    line(ctx,(i * xSpacing) + graphMarginLeft,canvasHeight-graphMarginBottom,(i * xSpacing) + graphMarginLeft,canvasHeight-graphMarginBottom-4,1)
+                }
+            }
+            else
+            {
+                for(let i = 0; i < xMaxAmount+1 ; i++){
+                    ctx.fillText((i+1).toString(),(i * (graphWidth/xMaxAmount)) + graphMarginLeft+4,canvasHeight-graphMarginBottom+11);
+                    line(ctx,(i * (graphWidth/xMaxAmount)) + graphMarginLeft,canvasHeight-graphMarginBottom,(i * (graphWidth/xMaxAmount)) + graphMarginLeft,canvasHeight-graphMarginBottom-4,1)
+                }
+            }
+            ctx.stroke();
+            ctx.closePath();
+
+
 
             ///////////// Graph
             ctx.beginPath();
@@ -73,7 +104,6 @@ const pkg: Package = {
 
 
             ctx.stroke();
-            console.log("Done drawing");
 
             return canvas;
         }
@@ -82,7 +112,6 @@ const pkg: Package = {
 
 
 function generateYLabels(values, amount) {
-    console.log(values);
     const min = Math.min(...values);
     const max = Math.max(...values);
 
@@ -91,15 +120,14 @@ function generateYLabels(values, amount) {
     for (let i = 0; i <= (amount - 1); i++)
         output.push(Math.round(((min + (delta * i))*10))/10);
 
-    console.log(output);
     return output;
 }
 
 function getStringLength(input) {
     const inputString = input.toString();
-     let number = inputString.length * 8;
+     let number = inputString.length * 6 + 4;
      if(input < 0) {
-         number -= 4;
+         number -= 2;
      }
      if (inputString.includes('.')) {
         number -= 4;
