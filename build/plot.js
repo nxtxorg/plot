@@ -53,29 +53,25 @@ var plot = (function () {
         },
     };
     function generateYLabels(values, amount) {
+        console.log(values);
         var min = Math.min.apply(Math, values);
         var max = Math.max.apply(Math, values);
         var delta = (max - min) / (amount - 1);
         var output = [];
         for (var i = 0; i <= (amount - 1); i++)
-            output.push(Math.round((min + (delta * i) * 10)) / 10);
+            output.push(Math.round(((min + (delta * i)) * 10)) / 10);
+        console.log(output);
         return output;
     }
     function getStringLength(input) {
-        console.log(input);
         var inputString = input.toString();
-        console.log(inputString);
         var number = inputString.length * 8;
-        console.log(number);
         if (input < 0) {
             number -= 4;
         }
         if (inputString.includes('.')) {
-            console.log("dot");
             number -= 4;
         }
-        console.log(number);
-        console.log("outputnumber", number);
         return number;
     }
     function line(context, x1, y1, x2, y2, lineWidth) {

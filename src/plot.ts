@@ -82,32 +82,28 @@ const pkg: Package = {
 
 
 function generateYLabels(values, amount) {
+    console.log(values);
     const min = Math.min(...values);
     const max = Math.max(...values);
 
     const delta = (max - min) / (amount - 1);
     const output = [];
     for (let i = 0; i <= (amount - 1); i++)
-        output.push(Math.round((min + (delta * i)*10))/10);
+        output.push(Math.round(((min + (delta * i))*10))/10);
 
+    console.log(output);
     return output;
 }
 
 function getStringLength(input) {
-    console.log(input);
     const inputString = input.toString();
-    console.log(inputString);
      let number = inputString.length * 8;
-     console.log(number);
      if(input < 0) {
          number -= 4;
      }
      if (inputString.includes('.')) {
-        console.log("dot");
         number -= 4;
     }
-     console.log(number);
-     console.log("outputnumber",number);
     return number
 }
 
