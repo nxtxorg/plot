@@ -1,19 +1,40 @@
 import {NodeType, INxtx, Package, Node} from '../nxtx';
 
-declare const nxtx: INxtx;
-const defaultOptions = {
+interface Line {
+    x:number[],
+    y:number[],
+    colour?:string
+}
+
+interface Options {
     y: {
-        prefix: '',
+        label?:string,
+        postfix?:string,
+        prefix?: string,
+        decimals?: number,
+        values: number[],
+
+    },
+    lines?:Line[]
+}
+
+declare const nxtx: INxtx;
+const defaultOptions : Options = {
+    y: {
+        label:"",
+        postfix:"",
+        prefix: "",
         decimals: 0,
-        values: []
-    }
+        values: [],
+    },
+    lines:[],
 };
 
 const pkg: Package = {
     name: 'plot',
     commands: {
         plot: (optionsNode: Node) => {
-            const options = Object.assign({}, defaultOptions, nxtx.jsArgument(optionsNode));
+            const options : Options = Object.assign({}, defaultOptions, nxtx.jsArgument(optionsNode));
             //let {type, y, ylabel, xlabel} = dictionaryNode.value;
             const canvas = <HTMLCanvasElement>nxtx.htmlLite("canvas", {});
             const ctx = canvas.getContext("2d");
@@ -82,7 +103,15 @@ const pkg: Package = {
             ctx.stroke();
             ctx.closePath();
 
-
+            /////// Lines
+            for(let i = 0; i < options.lines.length;i++){
+                ctx.beginPath();
+                ctx.strokeStyle = options.lines[i].colour || "black";
+                line(ctx,options.lines[i].x[0]+graphMarginLeft,options.lines[i].y[0]+graphMarginTop,options.lines[i].x[1]+graphMarginLeft,options.lines[i].y[1]+graphMarginTop,0.5);
+                ctx.stroke();
+                ctx.closePath();
+            }
+            ctx.strokeStyle = "black";
 
             ///////////// Graph
             ctx.beginPath();
@@ -104,6 +133,11 @@ const pkg: Package = {
 
 
             ctx.stroke();
+            ctx.closePath();
+
+
+
+
 
             return canvas;
         }

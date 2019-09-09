@@ -3,22 +3,21 @@ var plot = (function () {
 
     var defaultOptions = {
         y: {
-            prefix: '',
+            label: "",
+            postfix: "",
+            prefix: "",
             decimals: 0,
-            values: []
-        }
+            values: [],
+        },
+        lines: [],
     };
     var pkg = {
         name: 'plot',
         commands: {
             plot: function (optionsNode) {
-                console.log("Drawing..");
                 var options = Object.assign({}, defaultOptions, nxtx.jsArgument(optionsNode));
                 var canvas = nxtx.htmlLite("canvas", {});
                 var ctx = canvas.getContext("2d");
-                console.log("getting values..");
-                console.table(options);
-                console.log("values: ", options.y.values);
                 var normalizedY = normalize(options.y.values);
                 var yLabels = generateYLabels(options.y.values, 10);
                 var labelLengths = yLabels.map(function (x) { return getStringLength(x); });
@@ -51,24 +50,29 @@ var plot = (function () {
                 var xMaxAmount = Math.round(graphWidth / 30);
                 var xAmount = options.y.values.length;
                 var xSpacing = graphWidth / xAmount;
-                console.log(xSpacing);
                 ctx.beginPath();
                 if (xAmount < xMaxAmount) {
                     for (var i = 0; i < xAmount + 1; i++) {
-                        console.log(i.toString(), graphMarginLeft, graphHeight - graphMarginBottom);
                         ctx.fillText((i + 1).toString(), (i * xSpacing) + graphMarginLeft + 4, canvasHeight - graphMarginBottom + 11);
                         line(ctx, (i * xSpacing) + graphMarginLeft, canvasHeight - graphMarginBottom, (i * xSpacing) + graphMarginLeft, canvasHeight - graphMarginBottom - 4, 1);
                     }
                 }
                 else {
                     for (var i = 0; i < xMaxAmount + 1; i++) {
-                        console.log(i.toString(), graphMarginLeft, graphHeight - graphMarginBottom);
                         ctx.fillText((i + 1).toString(), (i * (graphWidth / xMaxAmount)) + graphMarginLeft + 4, canvasHeight - graphMarginBottom + 11);
                         line(ctx, (i * (graphWidth / xMaxAmount)) + graphMarginLeft, canvasHeight - graphMarginBottom, (i * (graphWidth / xMaxAmount)) + graphMarginLeft, canvasHeight - graphMarginBottom - 4, 1);
                     }
                 }
                 ctx.stroke();
                 ctx.closePath();
+                for (var i = 0; i < options.lines.length; i++) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = options.lines[i].colour || "black";
+                    line(ctx, options.lines[i].x[0] + graphMarginLeft, options.lines[i].y[0] + graphMarginTop, options.lines[i].x[1] + graphMarginLeft, options.lines[i].y[1] + graphMarginTop, 0.5);
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+                ctx.strokeStyle = "black";
                 ctx.beginPath();
                 for (var i = 0; i < normalizedY.length - 1; i++) {
                     line(ctx, i * spacing + graphMarginLeft, graphHeight - (normalizedY[i] * graphHeight) + graphMarginTop, (i + 1) * spacing + graphMarginLeft, graphHeight - (normalizedY[i + 1] * graphHeight) + graphMarginTop, 1);
@@ -80,7 +84,7 @@ var plot = (function () {
                 line(ctx, graphMarginLeft, graphMarginTop, canvasWidth - graphMarginRight, graphMarginTop);
                 line(ctx, graphMarginLeft, canvasHeight - graphMarginBottom, canvasWidth - graphMarginRight, canvasHeight - graphMarginBottom);
                 ctx.stroke();
-                console.log("Done drawing");
+                ctx.closePath();
                 return canvas;
             }
         },
