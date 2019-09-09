@@ -30,7 +30,7 @@ var plot = (function () {
                 ctx.beginPath();
                 for (var i = 0; i < yLabels.length; i++) {
                     line(ctx, offset, (verticalSpacing * i) + graphMarginTop, offset + 5, (verticalSpacing * i) + graphMarginTop, 1);
-                    ctx.fillText(String(Math.round(yLabels[i])), graphMarginLeft - (Math.max.apply(Math, yValue).toString().length * 8), i * verticalSpacing + graphMarginTop + 4);
+                    ctx.fillText(String(Math.round(yLabels[yLabels.length - (i + 1)] * 10) / 10), graphMarginLeft - ((Math.max.apply(Math, yValue).toString().length + 1) * 8), i * verticalSpacing + graphMarginTop + 4);
                 }
                 ctx.stroke();
                 ctx.closePath();
